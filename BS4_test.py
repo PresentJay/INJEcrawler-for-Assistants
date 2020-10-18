@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+# 20143174 - PresentJay, INJE Univ.
+
 
 def test(url):
     req = requests.get(url)

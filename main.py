@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
-# from Requests_test import *
-from BS4_test import *
+from Session_test import *
 
 # 20143174 - PresentJay, INJE Univ.
 
@@ -16,8 +15,11 @@ def main():
     CATEGORY = os.getenv('CATEGORY')
     CATEGORY_TARGET = os.getenv('CATEGORY_TARGET')
     MOD = os.getenv('MOD')
+    ID = os.getenv('ID')
+    PW = os.getenv('PW')
 
-    test(HOME + TARGET + PAGE + CATEGORY + CATEGORY_TARGET + MOD)
+    test(os.getenv('LOGIN_URL'), ID, PW)
+    # test(HOME + TARGET + PAGE + CATEGORY + CATEGORY_TARGET + MOD, ID, PW)
 
 
 if __name__ == "__main__":
