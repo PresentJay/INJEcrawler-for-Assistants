@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
-from Requests_test import *
+# from Requests_test import *
+from BS4_test import *
 
 # 20143174 - PresentJay, INJE Univ.
 
