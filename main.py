@@ -7,7 +7,7 @@ from Session_test import *
 
 def main():
     # get environment variables
-    load_dotenv(verbose=True)
+    load_dotenv(verbose=True, encoding='UTF8')
 
     HOME = os.getenv('HOME')
     TARGET = os.getenv('TARGET')
@@ -17,10 +17,13 @@ def main():
     MOD = os.getenv('MOD')
     ID = os.getenv('ID')
     PW = os.getenv('PW')
+
     URL_PREV = HOME + TARGET + PAGE
     URL_NEXT = CATEGORY + CATEGORY_TARGET + MOD
 
-    test(os.getenv('LOGIN_URL'), ID, PW, URL_PREV, URL_NEXT)
+    SUBJECT = os.getenv('SUBJECT')
+
+    test(os.getenv('LOGIN_URL'), ID, PW, URL_PREV, URL_NEXT, SUBJECT)
     # test(, ID, PW)
 
 
