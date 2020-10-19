@@ -17,9 +17,11 @@ def main():
     MOD = os.getenv('MOD')
     ID = os.getenv('ID')
     PW = os.getenv('PW')
+    URL_PREV = HOME + TARGET + PAGE
+    URL_NEXT = CATEGORY + CATEGORY_TARGET + MOD
 
-    test(os.getenv('LOGIN_URL'), ID, PW)
-    # test(HOME + TARGET + PAGE + CATEGORY + CATEGORY_TARGET + MOD, ID, PW)
+    test(os.getenv('LOGIN_URL'), ID, PW, URL_PREV, URL_NEXT)
+    # test(, ID, PW)
 
 
 if __name__ == "__main__":
