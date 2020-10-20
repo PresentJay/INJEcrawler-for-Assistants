@@ -4,7 +4,6 @@ from itertools import repeat
 
 # 20143174 - PresentJay, INJE Univ.
 
-
 def main():
 
     with requests.Session() as s:
@@ -21,23 +20,14 @@ def main():
 
         e_time = time.time()
         
+        print("start download", len(searchedList), "files. . .")
+        
         with Pool(os.cpu_count()) as pool:
             pool.starmap(get_download, zip(searchedList, repeat(s)))
             # pool.map(partial(get_download, session = s), searchedList)
             
         print(time.time()-e_time,"seconds elapsed. . .")
         
-        # count = 1
-        # for item in searchedList:
-        #     det_url = URL_PREV + str(item['pgNum']) + CATEGORY + CATEGORY_TARGET + os.getenv(
-        #         'DETAIL_MOD') + os.getenv('DOWNLOAD_UID_PREV') + str(item['Uid'])
-
-        #     down_url = DOWNLOAD_PREV + item['Uid'] + DOWNLOAD_NEXT
-        #     print("(" + str(count) + "/" + str(len(searchedList)) + ") download complete /",
-        #           time.time() - e_time, "second elapsed :", item['Student'])
-        #     get_download(down_url, s, item, det_url)
-        #     count += 1
-            
         # session retry when session is aborted with connection error or other reason
         """ except:
             s = get_session(os.getenv('LOGIN_URL'), ID, PW)

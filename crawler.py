@@ -77,9 +77,9 @@ def get_content(session, target_list, pgNum):
                 # Get Homework Number
                 if '#' in title:
                     # 일단 과제 수를 1자리수라고 가정하고 간단하게 코딩
-                    tmp_dict['HomeworkNum'] = title.split('#')[1].strip()[0]
+                    tmp_dict['HomeworkNum'] = title.split('#')[-1].strip().replace('_',"")[0]
                 elif '과제' in title:
-                    tmp_dict['HomeworkNum'] = title.split('과제')[1].strip()[0]
+                    tmp_dict['HomeworkNum'] = title.split('과제')[-1].strip().replace('_',"")[0]
 
                 # Get Student Nmae
                 tmp_dict['Student'] = item.contents[5].text
@@ -121,7 +121,7 @@ def check_directory(dirname):
         current += "\\" + item
         if os.path.exists(current) is False:
             os.mkdir(current)
-            print("create directory >", current)
+            print("create directory > ", current)
 
 
 def get_download(obj, session):
