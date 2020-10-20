@@ -1,22 +1,22 @@
 import requests
 import time
-import os
+from multiprocessing import Pool
 from bs4 import BeautifulSoup
-from multiprocessing import Pool, cpu_count
-from urllib import request
+from load_data import *
 
 # 20143174 - PresentJay, INJE Univ.
 
 
-def get_session(url, session, ID_, PW_):
+# 세션 로그인을 수행하는 funcstion
+def get_session(session):
     login_info = {
-        'username-77': ID_,
-        'user_password-77': PW_
+        'username-77': ID,
+        'user_password-77': PW
     }
 
     # HTTP GET Request : use session object on behalf of requests
     # create session, and maintain it in "with" phrase
-    res = session.post(url, data=login_info)
+    res = session.post(LOGIN_URL, data=login_info)
 
     # raise exceptions if the error occurs
     res.raise_for_status()
@@ -27,16 +27,19 @@ def get_session(url, session, ID_, PW_):
                 'could not login. please check your ID or PW again.') """
     return res
 
+# 전체 게시글 page를 순회하며 게시글 정보 list를 반환하는 함수
 
-def searchByFullPagination(session, target_url_prev, target_url_next, target_subject):
+
+def searchByFullPagination(session):
     # pagenated scraping
     pg_count = 1
     target_list = []
     startTime = time.time()
 
+    # 게시글 끝에 다다를때까지 pagination을 진행시키며, get_content로 각 게시글의 정보를 긁어옴
     while(1):
         # try:
-        if get_content(session, target_url_prev + str(pg_count) + target_url_next, target_list, target_subject, pg_count) is False:
+        if get_content(session, target_list, pg_count) is False:
             break
         print('page' + str(pg_count), 'is done')
         pg_count += 1
@@ -46,11 +49,9 @@ def searchByFullPagination(session, target_url_prev, target_url_next, target_sub
 
     return target_list
 
-    # pool = Pool(processes=cpu_count())
-    # print(get_uid_list(target_list))
 
-
-def get_content(session, url, target_list, target_subject, pgNum):
+def get_content(session, target_list, pgNum):
+    url = URL_PREV + str(pgNum) + URL_NEXT + MOD
     res = session.get(url)
     soup = BeautifulSoup(res.text, 'html.parser')
     tmp_list = soup.select(
@@ -60,37 +61,32 @@ def get_content(session, url, target_list, target_subject, pgNum):
     if tmp_list != None:
         for item in tmp_list:
             tmp_dict = {}
-            title = item.contents[3].contents[1].contents[1].contents[0].strip(
-            )
+            title = item.contents[3].contents[1].contents[1].contents[0].strip()
 
             # select by subject
-            if target_subject in title:
-                tmp_dict['Uid'] = item.contents[3].contents[1].get('href').split('&uid=')[
-                    1]
+            if SUBJECT in title:
+                tmp_dict['Uid'] = item.contents[3].contents[1].get('href').split('&uid=')[1]
                 # tmp_dict['Title'] = title
 
                 # Get Subject Name
-                if target_subject == '설계':
+                if SUBJECT == '설계':
                     tmp_dict['Subject'] = '데이터베이스설계및구현'
                 else:
-                    tmp_dict['Subject'] = target_subject
+                    tmp_dict['Subject'] = SUBJECT
 
                 # Get Homework Number
                 if '#' in title:
                     # 일단 과제 수를 1자리수라고 가정하고 간단하게 코딩
-                    tmp_dict['HomeworkNum'] = title.split('#')[
-                        1].strip()[0]
+                    tmp_dict['HomeworkNum'] = title.split('#')[1].strip()[0]
                 elif '과제' in title:
-                    tmp_dict['HomeworkNum'] = title.split('과제')[
-                        1].strip()[0]
+                    tmp_dict['HomeworkNum'] = title.split('과제')[1].strip()[0]
 
                 # Get Student Nmae
                 tmp_dict['Student'] = item.contents[5].text
 
                 # Get Student Number
                 tmp_SN = title.split(tmp_dict['Student'])[0].rstrip()
-                tmp_dict['StudentNum'] = tmp_SN[-9:-
-                                                1] if tmp_SN[-1] is '_' else tmp_SN[-8:]
+                tmp_dict['StudentNum'] = tmp_SN[-9:-1] if tmp_SN[-1] is '_' else tmp_SN[-8:]
 
                 # Get Upload Date
                 tmp_dict['Date'] = item.contents[7].text
@@ -128,25 +124,27 @@ def check_directory(dirname):
             print("create directory >", current)
 
 
-def get_download(url, session, obj, referer):
+def get_download(obj, session):
+    
+    url =  DOWNLOAD_PREV + obj['Uid'] + DOWNLOAD_NEXT
+    referer = URL_PREV + str(obj['pgNum']) + URL_NEXT + DETAIL_MOD + DOWNLOAD_UID_PREV + str(obj['Uid'])
 
-    directory = obj["Subject"] + "\\과제" + str(obj["HomeworkNum"])
-    filename = str(obj["StudentNum"]) + "_" + \
-        obj["Student"] + "_" + obj["Date"].replace('.', '-')
+    directory = "downloads\\" + obj["Subject"] + "\\과제" + str(obj["HomeworkNum"])
+    filename = str(obj["StudentNum"]) + "_" + obj["Student"] + "_" + obj["Date"].replace('.', '-')
 
-    print(directory + "\\" + filename)
     check_directory(directory)
 
-    print("--- starts download . . . ")
+    # print("--- starts download . . . ")
     try:
         res = session.get(url, headers={'Referer': referer})
-        with open(directory + '\\' + filename + "." + res.headers["Content-Disposition"].split(".")[1].replace('"', ''), "wb") as file:
-            file.write(res.content)
+        if "Content-Disposition" in res.headers:
+            with open(directory + '\\' + filename + "." + res.headers["Content-Disposition"].split(".")[-1].replace('"', ""), "wb") as file:
+                file.write(res.content)
 
-    except request.HTTPError as e:
+    except res.HTTPError as e:
         print(e)
 
-    print("--- Download done . . .")
+    # print("--- Download done . . .")
 
 
 def get_detail(url, session):

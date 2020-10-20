@@ -1,0 +1,48 @@
+{
+    "PROJECTFILES": [
+        "crawler.py",
+        "load_data.py",
+        "main.py",
+        "priv_tests"
+    ],
+
+    "IGNOREFILE_DEFAULT": [
+        "__pycache__",
+        ".gitignore",
+        ".git",
+        ".vscode",
+        "Scripts",
+        "README.md",
+        "venv",
+        "config.json",
+        "downloads"
+
+    ],
+
+    "login_info": {
+        "username-77": "",
+        "user_password-77": "",
+        "form_id": "77",
+        "_wpnonce": "866658c8ed",
+        "_wp_http_referer": "/login/"
+    },
+
+    "SET_ENV_MODE": "False",
+
+    "HOME": "https://cs.inje.ac.kr",
+    "TARGET": "/%ec%88%98%ec%97%85%ea%b3%bc%ec%a0%9c%eb%93%b1%eb%a1%9d",
+    "PAGE": "/?pageid=",
+    "CATEGORY": "&category1=",
+    "CATEGORY_TARGET": "%EA%B9%80%ED%9D%A5%EC%8B%9D",
+    "MOD": "&mod=list",
+
+    "DETAIL_MOD": "&mod=document",
+
+    "DOWNLOAD_ACTION": "/?action=kboard_file_download",
+    "DOWNLOAD_UID_PREV": "&uid=",
+    "DOWNLOAD_UID_NEXT": "&file=file1&kboard-file-download-nonce=",
+    "DOWNLOAD_NONCE": "161f171144",
+
+    "LOGIN_URL": "https://cs.inje.ac.kr/login/"
+
+}
