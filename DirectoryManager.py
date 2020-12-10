@@ -1,5 +1,7 @@
 import os.path
+import shutil
 from load_data import *
+from ExcelAccessment import *
 
 """ DirectoryManager.py """
 # Directory를 이용한 Function을 정의합니다.
@@ -28,3 +30,33 @@ def getFiles(_dir=os.getcwd(), extension='*', absolute=True):
             _file = os.path.join(_dir, _file)
         files.append(_file)
     return files
+
+
+def check_directory(dirname):
+    current = "."
+    for item in dirname.split('\\'):
+        current += "\\" + item
+        if os.path.exists(current) is False:
+            os.mkdir(current)
+            print("create directory > {}".format(current))
+
+
+def arrangeFiles(sbj, students):
+    basedir = "downloads\\" + sbj + "\\"
+    
+    for _ in range(1,10):
+        middir = "과제{}".format(_)
+        check_directory(basedir + middir)
+        for __ in range(0, 5):
+            check_directory(basedir + middir + "\\{}점".format(__))
+    
+    for _ in students:
+        for work in range(1, 10):
+            workdir = basedir + "과제{}".format(work)
+            enddir = workdir + "\\끝"
+            for file in os.listdir(enddir):
+                if file.split("_")[0] == _["stdnum"]:
+                    newdir ="{}\\{}점".format(workdir, _["works"][work-1])
+                    shutil.move(enddir+"\\" +file, newdir)
+                    print("change>>",enddir+file, "to", newdir)
+            shutil.rmtree(enddir)

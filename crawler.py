@@ -2,6 +2,7 @@ import requests
 import time
 from multiprocessing import Pool
 from bs4 import BeautifulSoup
+from DirectoryManager import *
 from load_data import *
 
 # 20143174 - PresentJay, INJE Univ.
@@ -27,9 +28,20 @@ def get_session(session):
                 'could not login. please check your ID or PW again.') """
     return res
 
+
+def get_wpnonce():
+    req = requests.get("https://cs.inje.ac.kr/login/")
+    html = req.text
+    soup = BeautifulSoup(html, 'html.parser')
+    _wpnonce = soup.select('#_wpnonce')
+
+    return _wpnonce[0]["value"]
+
+def get_download_nonce(session):
+    res = session.get()
+
+
 # 전체 게시글 page를 순회하며 게시글 정보 list를 반환하는 함수
-
-
 def searchByFullPagination(session):
     # pagenated scraping
     pg_count = 1
@@ -103,6 +115,7 @@ def get_content(session, target_list, pgNum):
 
     # 마지막 페이지 확인시 종료
     if soup.select_one('#kboard-default-list > div.kboard-pagination > ul > li.last-page') is None:
+        print('page',pgNum, '(last) is done.')
         print('paginated scraping done. total =',
               len(target_list), ' . . . \n')
         return False
@@ -115,13 +128,6 @@ def get_uid_list(src):
     return res
 
 
-def check_directory(dirname):
-    current = "."
-    for item in dirname.split('\\'):
-        current += "\\" + item
-        if os.path.exists(current) is False:
-            os.mkdir(current)
-            print("create directory > ", current)
 
 
 def get_download(obj, session):

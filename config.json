@@ -2,6 +2,8 @@
     "PROJECTFILES": [
         "crawler.py",
         "load_data.py",
+        "DirectoryManager.py",
+        "CommandDecorator.py",
         "main.py",
         "priv_tests"
     ],
@@ -23,7 +25,7 @@
         "username-77": "",
         "user_password-77": "",
         "form_id": "77",
-        "_wpnonce": "866658c8ed",
+        "_wpnonce": "",
         "_wp_http_referer": "/login/"
     },
 
