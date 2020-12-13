@@ -45,6 +45,13 @@
     "DOWNLOAD_UID_NEXT": "&file=file1&kboard-file-download-nonce=",
     "DOWNLOAD_NONCE": "161f171144",
 
-    "LOGIN_URL": "https://cs.inje.ac.kr/login/"
+    "LOGIN_URL": "https://cs.inje.ac.kr/login/",
+
+    "DELETE_INFO" : {
+        "mod" : "remove",
+        "kboard-content-remove-nonce" : "",
+        "pageid" : "",
+        "uid" : ""
+    }
 
 }

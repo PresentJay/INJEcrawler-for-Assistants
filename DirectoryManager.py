@@ -36,9 +36,10 @@ def check_directory(dirname):
     current = "."
     for item in dirname.split('\\'):
         current += "\\" + item
-        if os.path.exists(current) is False:
+        if (os.path.exists(current) is False):
             os.mkdir(current)
             print("create directory > {}".format(current))
+            
 
 
 def arrangeFiles(sbj, students):
@@ -60,3 +61,52 @@ def arrangeFiles(sbj, students):
                     shutil.move(enddir+"\\" +file, newdir)
                     print("change>>",enddir+file, "to", newdir)
             shutil.rmtree(enddir)
+            
+
+def get_currentFiles(obj):
+    basedir = os.path.join("downloads", obj, "과제")
+    
+    res = []
+    
+    for _ in range(1, 10):
+        _dir = basedir + str(_)
+        if os.path.exists(_dir):    
+            tmp = {
+                "subject" : obj,
+                "worknum" : _,
+                "dir" : _dir,
+                "member": []
+            }
+            if obj == "데이터베이스설계및구현":
+                for __ in range(1, 5):
+                    _score = "{}점".format(__)
+                    _scorepath = os.path.join(tmp["dir"], _score)
+                    if os.path.exists(_scorepath):
+                        for file in os.listdir(_scorepath):
+                            tmp["member"].append(file.split("_")[1])
+            elif obj == "데이터구조":
+                tmp["member"] = []
+                for file in os.listdir(tmp["dir"]):
+                    tmp["member"].append(file.split("_")[1])
+            res.append(tmp)
+        else:
+            continue
+    return res
+
+# def get_currentFiles(obj, homeworknum):
+#     basedir = os.path.join("downloads", obj, "과제{}".format(homeworknum))
+#     res = []
+#     if os.path.exists(basedir):    
+#         if obj == "데이터베이스설계및구현":
+#             for __ in range(1, 5):
+#                 _score = "{}점".format(__)
+#                 _scorepath = os.path.join(basedir, _score)
+#                 if os.path.exists(_scorepath):
+#                     for file in os.listdir(_scorepath):
+#                         res.append(file.split("_")[1])
+#         elif obj == "데이터구조":
+#             tmp["member"] = []
+#             for file in os.listdir(basedir):
+#                 res.append(file.split("_")[1])
+#     return res
+            

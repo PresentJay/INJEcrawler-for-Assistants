@@ -19,22 +19,42 @@ def main():
         res = s.post(os.getenv('LOGIN_URL'), data=login_info)
         res.raise_for_status()
         
-        stdlist = readExcelData("C:\\Users\\PresentJay\\Desktop\\2020-데이터베이스설계및구현-과제채점\\데이터베이스설계및구현_수강생명단.xlsx")
+        # stdlist = readExcelData("C:\\Users\\PresentJay\\Desktop\\2020-데이터베이스설계및구현-과제채점\\데이터베이스설계및구현_수강생명단.xlsx")
+        # arrangeFiles("데이터베이스설계및구현", stdlist)
 
-        arrangeFiles("데이터베이스설계및구현", stdlist)
-
-        # searchedList = searchByFullPagination(s)
+        searchedList = searchByFullPagination(s)
         # UidList = get_uid_list(searchedList)
-
-        # e_time = time.time()
+        
+        e_time = time.time()
         
         # print("start download", len(searchedList), "files. . .")
+        
+        
+        print("start delete")
+        if SUBJECT is "설계":
+            subject = "데이터베이스설계및구현"
+        else:
+            subject = SUBJECT
+        remove_list = get_currentFiles(subject)
+        
+    
+        # delete_page(searchedList[0], res)
+        
+        
+        with Pool(os.cpu_count()) as pool:
+            pool.starmap(delete_page, zip(searchedList, repeat(s)))
+            # pool.map(partial(get_download, session = s), searchedList)
+        
+        # if target["Student"] in remove_list:
+        #     delete_page(target, s)
+        # else:
+        #     print("error errupt")
         
         # with Pool(os.cpu_count()) as pool:
         #     pool.starmap(get_download, zip(searchedList, repeat(s)))
         #     # pool.map(partial(get_download, session = s), searchedList)
             
-        # print(time.time()-e_time,"seconds elapsed. . .")
+        print(time.time()-e_time,"seconds elapsed. . .")
         
         # session retry when session is aborted with connection error or other reason
         """ except:

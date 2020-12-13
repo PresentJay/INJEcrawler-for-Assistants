@@ -29,6 +29,19 @@ def get_session(session):
     return res
 
 
+def get_removenonce(url):
+    referer = url.split("document")[0] + "&mod=list&pageid={}".format(url.split("pageid=")[1].split("&uid")[0])
+    # req = requests.get(url, headers = { "referer" : referer})
+    
+    req = requests.get(url)
+    
+    html = req.text
+    soup = BeautifulSoup(html, 'html.parser')
+    _removenonce = soup.select('#kboard-default-document > div.kboard-control > div.right > a:nth-child(2)')
+    
+    return _removenonce["href"].split("remove-nonce=")[1]
+
+
 def get_wpnonce():
     req = requests.get("https://cs.inje.ac.kr/login/")
     html = req.text
@@ -36,9 +49,6 @@ def get_wpnonce():
     _wpnonce = soup.select('#_wpnonce')
 
     return _wpnonce[0]["value"]
-
-def get_download_nonce(session):
-    res = session.get()
 
 
 # 전체 게시글 page를 순회하며 게시글 정보 list를 반환하는 함수
@@ -151,6 +161,23 @@ def get_download(obj, session):
         print(e)
 
     # print("--- Download done . . .")
+
+
+def delete_page(obj, session):
+    url = HOME + TARGET + "/?category1=" + CATEGORY_TARGET + "&mod=remove&pageid={}&uid={}&kboard-content-remove-nonce={}".format(obj['pgNum'], obj['Uid'], "8a80b542a2")
+    referer = HOME + TARGET + "/?category1=" + CATEGORY_TARGET + "&mod=document&pageid={}&uid={}".format(obj['pgNum'], obj['Uid'])
+    
+    # remove_info = config["DELETE_INFO"]
+    # remove_info["removenonce"] = "8a80b542a2"
+    # # get_removenonce(url + "&mod=document&pageid={}&uid={}".format(obj["pgNum"], obj["Uid"]))
+    # remove_info["pageid"] = obj['pgNum']
+    # remove_info["uid"] = obj['Uid']
+    
+    try:        
+        res = session.get(url, headers= { "Referer": referer})
+        print("{} uid item is deleted".format(obj["Uid"]))
+    except res.HTTPError as e:
+        print(e)
 
 
 def get_detail(url, session):
