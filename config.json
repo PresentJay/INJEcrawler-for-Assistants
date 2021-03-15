@@ -29,6 +29,8 @@
         "_wp_http_referer": "/login/"
     },
 
+    "SUBJECT" : "",
+
     "SET_ENV_MODE": "False",
 
     "HOME": "https://cs.inje.ac.kr",
